@@ -36,3 +36,16 @@ test.each([
   Character.prototype.damage.call(result, damage);
   expect(result).toEqual(expected);
 });
+
+test('health < 0', () => {
+  const result = new Character('deadnoob', 'Zombie');
+  result.health = -100;
+  Character.prototype.damage.call(result, 40);
+  expect(result).toEqual({
+    attack: 10,
+    defence: 40,
+    health: -100,
+    name: 'deadnoob',
+    type: 'Zombie',
+  });
+});
