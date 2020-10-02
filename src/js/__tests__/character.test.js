@@ -1,72 +1,51 @@
 import Character from '../character';
 
 test.each([
-  [1, 'type'],
-  [true, 'type'],
-  [null, 'type'],
-  [undefined, 'type'],
-  [[], 'type'],
-  [{}, 'type'],
-  ['a', 'type'],
-  ['   ', 'type'],
-  ['aaaaaaaaaaa', 'type'],
-  ['name', 'type'],
-])('%p %p', (name, type) => {
+  ['Alex', 'Bowman', -10],
+])('%p %p %p', (name, type, damage) => {
   expect(() => {
-    Character(name, type);
+    const character = new Character(name, type);
+    Character.prototype.damage.call(character, damage);
   }).toThrow();
 });
 
 test.each([
-  ['Alex', 'Bowman', {
-    attack: 25,
-    defence: 25,
+  ['Alex', 'Bowman', 0, {
+    attack: 10,
+    defence: 40,
     health: 100,
-    level: 1,
     name: 'Alex',
     type: 'Bowman',
   }],
-  ['Jack', 'Undead', {
-    attack: 25,
-    defence: 25,
-    health: 100,
-    level: 1,
-    name: 'Jack',
-    type: 'Undead',
-  }],
-  ['Semen', 'Swordsman', {
-    attack: 40,
-    defence: 10,
-    health: 100,
-    level: 1,
+  ['Semen', 'Swordsman', 100, {
+    attack: 10,
+    defence: 40,
+    health: 40,
     name: 'Semen',
     type: 'Swordsman',
   }],
-  ['Denis', 'Zombie', {
-    attack: 40,
-    defence: 10,
-    health: 100,
-    level: 1,
-    name: 'Denis',
-    type: 'Zombie',
-  }],
-  ['Alena', 'Magician', {
+  ['noob', 'Daemon', 170, {
     attack: 10,
     defence: 40,
-    health: 100,
-    level: 1,
-    name: 'Alena',
-    type: 'Magician',
-  }],
-  ['noob', 'Daemon', {
-    attack: 10,
-    defence: 40,
-    health: 100,
-    level: 1,
+    health: -2,
     name: 'noob',
     type: 'Daemon',
   }],
-])('%p %p', (name, type, expected) => {
-  const result = Character(name, type);
+])('%p %p %p', (name, type, damage, expected) => {
+  const result = new Character(name, type);
+  Character.prototype.damage.call(result, damage);
   expect(result).toEqual(expected);
+});
+
+test('health < 0', () => {
+  const result = new Character('deadnoob', 'Zombie');
+  result.health = -100;
+  Character.prototype.damage.call(result, 40);
+  expect(result).toEqual({
+    attack: 10,
+    defence: 40,
+    health: -100,
+    name: 'deadnoob',
+    type: 'Zombie',
+  });
 });
